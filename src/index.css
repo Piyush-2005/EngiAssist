@@ -1,0 +1,33 @@
+@import "tailwindcss";
+
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+@theme{
+    --color-primary-Default:#22D3EE;  /* Cyan-400 */
+    --color-primary-dark:#06B6D4;     /* Cyan-500 */
+
+    --color-secondary-Default:#1F2937;
+    --color-secondary-dark:#111827;
+
+    --gridTemplateColumns-auto:repeat(auto-fill, minmax(200px, 1fr));
+    --backdropBlur-xs:2px;
+}
+
+@layer utilities {
+  .gradient-text-hover {
+    transition: all 0.3s ease-in-out;
+  }
+  
+  .gradient-text-hover:hover {
+    background: linear-gradient(to right, #22d3ee, #3b82f6);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+}
+
