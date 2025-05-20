@@ -1,6 +1,6 @@
 import { initializeApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
-import { getFirestore } from "firebase/firestore";
+import { getAuth, connectAuthEmulator } from "firebase/auth";
+import { getFirestore, enableIndexedDbPersistence } from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -15,5 +15,28 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
+
+// Enable offline persistence
+enableIndexedDbPersistence(db)
+  .catch((err) => {
+    if (err.code === 'failed-precondition') {
+      console.error('Multiple tabs open, persistence can only be enabled in one tab at a time.');
+    } else if (err.code === 'unimplemented') {
+      console.error('The current browser does not support offline persistence');
+    }
+  });
+
+// Add auth state observer
+auth.onAuthStateChanged((user) => {
+  console.log('Auth state changed:', user ? 'User logged in' : 'User logged out');
+});
+
+// Debug authentication in development
+if (import.meta.env.DEV) {
+  console.log('Firebase Config:', {
+    authDomain: firebaseConfig.authDomain,
+    projectId: firebaseConfig.projectId
+  });
+}
 
 export { auth, db };
