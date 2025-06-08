@@ -1,53 +1,29 @@
-import React, { useRef, useState } from 'react';
-import { FcGoogle } from 'react-icons/fc';
+import React, { useRef, useEffect } from 'react';
+import { FcGoogle } from 'react-icons/fc'; // Add this import
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/UseAuth';
 
 
 const SignIn = () => {
-  const Auth = useAuth();
+  const Auth=useAuth();
   const navigate = useNavigate();
   const gradientRef = useRef(null);
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
-
-  const handleSignIn = async (e) => {
+   const handleSignIn=(e) => {
+    // Add sign-in logic here
+    console.log('Sign In clicked');
     e.preventDefault();
-    setError('');
-    setLoading(true);
-
     const username = e.target.username.value;
     const password = e.target.password.value;
-
-    try {
-      await Auth.login(username, password);
-      navigate('/dashboard');
-    } catch (error) {
-      console.error('Error signing in:', error);
-      setError(
-        error.code === 'auth/wrong-password' ? 'Invalid password' :
-        error.code === 'auth/user-not-found' ? 'User not found' :
-        error.code === 'auth/invalid-email' ? 'Invalid email format' :
-        'Failed to sign in'
-      );
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  const handleGoogleSignIn = async () => {
-    try {
-      setError('');
-      setLoading(true);
-      await Auth.googleSignIn();
-      navigate('/dashboard');
-    } catch (error) {
-      console.error('Google sign in error:', error);
-      setError('Failed to sign in with Google');
-    } finally {
-      setLoading(false);
-    }
-  }
+    console.log('Username:', username);
+    console.log('Password:', password);
+    Auth.login(username, password)
+    .then(() => {
+        navigate('/dashboard');
+      })
+      .catch((error) => {
+        console.error('Error signing up:', error);
+      });
+   }
 
   // useEffect(() => {
   //   if (gradientRef.current) {
@@ -67,6 +43,11 @@ const SignIn = () => {
       className="relative block transition-colors duration-[0.5s] transit bg-[#181818] z-2 w-[calc(20vw-2px)] md:w-[calc(10vw-2px)] lg:w-[calc(6.25vw-2px)] h-[calc(20vw-2px)] md:h-[calc(10vw-2px)] lg:h-[calc(6.25vw-2px)]"/>
   ));
 
+  const handleGoogleSignIn = () => {
+    // Add Google Sign In logic here when ready
+    console.log('Google Sign In clicked');
+  };
+
   return (
     <section className="select-none relative w-screen h-screen flex justify-center items-center gap-[2px] flex-wrap overflow-hidden bg-black">
       <div
@@ -80,13 +61,6 @@ const SignIn = () => {
       <div className="absolute w-[400px] bg-[#222] z-50 flex justify-center items-center p-10 rounded shadow-[0_15px_35px_rgba(0,0,0,0.9)]">
         <div className="w-full flex flex-col items-center gap-10">
           <h2 className="text-2xl uppercase text-cyan-400 font-quicksand">Sign In</h2>
-          
-          {error && (
-            <div className="w-full p-3 bg-red-500/10 border border-red-500 rounded text-red-500 text-sm">
-              {error}
-            </div>
-          )}
-
           <form className="w-full flex flex-col gap-6" onSubmit={handleSignIn}>
             <div className="relative w-full">
               <input
@@ -115,17 +89,12 @@ const SignIn = () => {
                 </Link>
             </div>
 
-            <button 
-              className="relative w-full" 
-              disabled={loading}
-            >
+            <button className="relative w-full">
               <input
                 type="submit"
-                value={loading ? "Signing in..." : "Login"}
-                className={`w-full p-3 bg-cyan-400 text-black font-semibold text-xl tracking-wider cursor-pointer rounded ${
-                  loading ? 'opacity-60' : 'active:opacity-60'
-                }`}
-                disabled={loading}
+
+                value="Login"
+                className="w-full p-3 bg-cyan-400 text-black font-semibold text-xl tracking-wider cursor-pointer active:opacity-60 rounded"
               />
             </button>
 
@@ -140,13 +109,10 @@ const SignIn = () => {
             <button
               type="button"
               onClick={handleGoogleSignIn}
-              disabled={loading}
-              className={`w-full p-3 bg-transparent border border-gray-600 rounded flex items-center justify-center gap-3 text-white transition-colors ${
-                loading ? 'opacity-60' : 'hover:bg-white/5'
-              }`}
+              className="w-full p-3 bg-transparent border border-gray-600 rounded flex items-center justify-center gap-3 text-white hover:bg-white/5 transition-colors"
             >
               <FcGoogle className="text-2xl" />
-              <span>{loading ? "Signing in..." : "Continue with Google"}</span>
+              <span>Continue with Google</span>
             </button>
           </form>
         </div>
